@@ -1,0 +1,250 @@
+---
+title: "Final Project"
+author: "Devin Keller & Dylan"
+subtitle: "MGSC 310"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+---
+
+```{r setup, include=FALSE}
+
+# Please leave this code chunk as is. It makes some slight formatting changes to alter the output to be more aesthetically pleasing. 
+
+library(knitr)
+#library(ggridges)
+
+# Change the number in set seed to your own favorite number
+set.seed(10)
+options(width=70)
+options(scipen=99)
+
+
+# this sets text outputted in code chunks to small
+opts_chunk$set(tidy.opts=list(width.wrap=50),tidy=TRUE, size = "vsmall")  
+opts_chunk$set(message = FALSE,                                          
+               warning = FALSE,
+               # "caching" stores objects in code chunks and only rewrites if you change things
+               cache = FALSE,                               
+               # automatically downloads dependency files
+               autodep = TRUE,
+               # 
+               cache.comments = FALSE,
+               # 
+               collapse = TRUE,
+               # change fig.width and fig.height to change the code height and width by default
+               fig.width = 5.5,  
+               fig.height = 4.5,
+               fig.align='center')
+
+
+```
+
+```{r setup-2}
+
+# Always print this out before your assignment
+sessionInfo()
+getwd()
+
+```
+
+
+<!-- ### start answering your problem set here -->
+<!-- You may export your homework in either html or pdf, with the former usually being easier. 
+     To export or compile your Rmd file: click above on 'Knit' then 'Knit to HTML' -->
+<!-- Be sure to submit both your .Rmd file and the compiled .html or .pdf file for full credit -->
+
+
+```{r setup-3}
+
+# load all your libraries in this chunk 
+library('tidyverse')
+library('forcats')
+library('rsample')
+library("readr")
+library("dplyr")
+library("purrr")
+library('randomForest')
+library('visNetwork')
+library('sparkline')
+library(partykit)
+library(rpart.plot)  
+library(plotROC)
+library(glmnet)
+library(glmnetUtils)
+library(ggridges)
+library(randomForestExplainer)
+library(ROCR)
+# note, do not run install.packages() inside a code chunk. install them in the console outside of a code chunk. 
+
+```
+
+
+
+#DATA CLEANING
+
+Converts all variables into factors and splots the dataset into train and test sets
+
+```{r}
+lead_df <- read_csv("Lead_Tree.csv")
+
+lead_df <- lead_df %>% as_tibble() %>%
+  mutate(Converted = as.factor(Converted),
+         Non_Work_Email = as.factor(Non_Work_Email),
+         Title_Blank = as.factor(Title_Blank),
+         Website_Blank = as.factor(Website_Blank))
+
+# create a split with 75% of the data in the training set
+lead_split <- initial_split(lead_df, prop = 0.75)
+lead_train <- training(lead_split)
+lead_test <- testing(lead_split)
+
+
+```
+
+
+#Summary Statistics
+
+Shows count and proportions of each class of binary variables in the dataset
+
+```{r}
+
+for(i in 1:ncol(lead_train)) {       # for-loop over columns
+  table1 <- (table(lead_train[,i]))
+  print(table1)
+  
+  table2 <-prop.table(table1)
+  print(table2)
+}
+
+
+
+```
+
+
+## Can we predict which leads are SPAM for lead scoring?
+
+#Decision Tree
+
+```{r}
+
+# use the ctree_control parameters to adjust stopping criteria
+lead_tree2 <- ctree(Converted ~ Non_Work_Email + Title_Blank + Website_Blank, 
+                       data = lead_train,
+                   control = partykit::ctree_control(alpha=0.1, 
+                                                     minbucket = 50))
+plot(lead_tree2)
+print(lead_tree2)
+
+
+```
+
+
+#Logistic Regression
+
+```{r}
+
+logit_fit <-  glm(Converted ~ Non_Work_Email + Title_Blank + Website_Blank,
+                   family = binomial,
+                   data = lead_train)
+
+print(summary(logit_fit))
+
+print(1- exp(logit_fit$coefficients))
+
+```
+
+Successfully created logistic regression model and all p values seem appropriate meaning it is likely that all variables have significance and are valuable in predicting the output effectively. The exponentiated list of coefficients can be interpreted as a lead with a non-work email is 92% less likely to be a good lead as one with a work email.
+
+
+```{r}
+
+scores_train <- predict(logit_fit,
+                  type = "response", 
+                  data = lead_train)
+
+scores_test <- predict(logit_fit,
+                  type = "response", 
+                  data = lead_test)
+
+
+pred = predict(logit_fit,lead_test,type="response")
+pred = prediction(pred, lead_test$Converted)
+roc = performance(pred,"tpr","fpr")
+print(plot(roc, colorize = T, lwd = 2))
+
+```
+
+This AUC plot shows that the model performed pretty well and that a suitable probability cutoff would be 0.35 in order to maximize True postive rates and minimize false positive rates, best indicating which leads are convertable.
+
+```{r}
+
+auc = performance(pred, measure = "auc")
+print(auc@y.values)
+
+```
+
+An AUC score of 0.8 is fantastic and shows that the model is a decently effective one which could definitely add value to the company and help score leads which will maximize profit for the company.
+
+
+
+
+
+##Can we use a linear regression model to predict when deals will close?
+
+```{r}
+ClosedWonData <- read_csv("ClosedWonData.csv")
+
+ClosedWonData
+
+ClosedWonData %>%
+  group_by(Industry_Category) %>%
+  summarize(Age = mean(Age)) 
+
+lm_mod1 <- lm(Age ~ Monthly_Gross_Profit + factor(Industry_Category) + Estimated_Annual_Revenue + factor(Lead_Source_Category) + factor(Type_of_Contract) + Total_Value + Contract_Length_Months, data = ClosedWonData)
+summary(lm_mod1)
+
+```
+
+```{r}
+
+#ClosedWonData
+
+#ridge_mod <- cv.glmnet(Age ~ Monthly_Gross_Profit + factor(Industry_Category) + Estimated_Annual_Revenue + factor(Lead_Source_Category) + factor(Type_of_Contract) + Total_Value + Contract_Length_Months, data = ClosedWonData, alpha=0)
+#print(ridge_mod)
+
+
+#lasso_mod <- cv.glmnet(Age ~ Monthly_Gross_Profit + factor(Industry_Category) + Estimated_Annual_Revenue + factor(Lead_Source_Category) + factor(Type_of_Contract) + Total_Value + Contract_Length_Months, data = ClosedWonData, alpha=1)
+#print(lasso_mod)
+#plot(lasso_mod)
+
+#coef(lasso_mod,
+ #    s = ridge_mod$lambda.min)
+
+ggplot(ClosedWonData, aes(x = Age, y = Industry_Category)) + geom_density_ridges2()
+
+ggplot(ClosedWonData, aes(x = Age, y = Lead_Source_Category)) + geom_density_ridges2()
+
+ggplot(ClosedWonData, aes(x = Age, y = Type_of_Contract)) + geom_density_ridges2()
+
+ggplot(ClosedWonData, aes(x = Age, y = Monthly_Gross_Profit)) + geom_point() + geom_smooth(method = "lm", color = "red")
+
+
+```
+
+```{r}
+
+ClosedWonData %>%
+  summarise_all(funs(max, min, mean))
+
+
+data("BOD")
+summary("BOD")
+BOD$rate <- BOD$demand/BOD$time
+
+```
+
+
+
+
