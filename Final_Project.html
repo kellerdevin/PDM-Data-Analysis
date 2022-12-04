@@ -1714,37 +1714,11 @@ lead_test &lt;- testing(lead_split)
 <p>Shows count and proportions of each class of binary variables in the
 dataset</p>
 <pre class="r"><code>
-for(i in 1:ncol(lead_df)) {       # for-loop over columns
-  table1 &lt;- (table(lead_df[,i]))
-  print(table1)
-  
-  table2 &lt;-prop.table(table1)
-  print(table2)
-}
-## Non_Work_Email
-##    0    1 
-## 2089 1466 
-## Non_Work_Email
-##         0         1 
-## 0.5876231 0.4123769 
-## Title_Blank
-##    0    1 
-## 1198 2357 
-## Title_Blank
-##         0         1 
-## 0.3369902 0.6630098 
-## Website_Blank
-##    0    1 
-## 1339 2216 
-## Website_Blank
-##         0         1 
-## 0.3766526 0.6233474 
-## Converted
-##    0    1 
-## 2951  604 
-## Converted
-##         0         1 
-## 0.8300985 0.1699015</code></pre>
+
+summary(lead_df)
+##  Non_Work_Email Title_Blank Website_Blank Converted
+##  0:2089         0:1198      0:1339        0:2951   
+##  1:1466         1:2357      1:2216        1: 604</code></pre>
 <div id="can-we-predict-which-leads-are-spam-for-lead-scoring" class="section level2">
 <h2>Can we predict which leads are SPAM for lead scoring?</h2>
 <p>#Decision Tree</p>

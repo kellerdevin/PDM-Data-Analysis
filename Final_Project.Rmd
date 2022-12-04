@@ -110,13 +110,8 @@ Shows count and proportions of each class of binary variables in the dataset
 
 ```{r}
 
-for(i in 1:ncol(lead_df)) {       # for-loop over columns
-  table1 <- (table(lead_df[,i]))
-  print(table1)
-  
-  table2 <-prop.table(table1)
-  print(table2)
-}
+
+summary(lead_df)
 
 
 
