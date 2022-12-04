@@ -150,7 +150,22 @@ print(1- exp(logit_fit$coefficients))
 
 ```
 
+
 Successfully created logistic regression model and all p values seem appropriate meaning it is likely that all variables have significance and are valuable in predicting the output effectively. The exponentiated list of coefficients can be interpreted as a lead with a non-work email is 92% less likely to be a good lead as one with a work email.
+
+```{r}
+
+coeffMag <- data.frame(Variables=c("Intercept","Non_Work_Email","Title_Blank","Website Blank"), 
+                       coefficients=c(.36,.91,.43,.41))
+  
+# Basic vertical barplot
+Barchart <-ggplot(data=coeffMag, aes(x=Variables, y=coefficients, fill=Variables))+
+  geom_bar(stat="identity")
+
+Barchart + coord_flip()
+
+
+```
 
 
 ```{r}
