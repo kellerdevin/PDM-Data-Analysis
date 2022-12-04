@@ -110,8 +110,8 @@ Shows count and proportions of each class of binary variables in the dataset
 
 ```{r}
 
-for(i in 1:ncol(lead_train)) {       # for-loop over columns
-  table1 <- (table(lead_train[,i]))
+for(i in 1:ncol(lead_df)) {       # for-loop over columns
+  table1 <- (table(lead_df[,i]))
   print(table1)
   
   table2 <-prop.table(table1)
@@ -238,10 +238,6 @@ ggplot(ClosedWonData, aes(x = Age, y = Monthly_Gross_Profit)) + geom_point() + g
 ClosedWonData %>%
   summarise_all(funs(max, min, mean))
 
-
-data("BOD")
-summary("BOD")
-BOD$rate <- BOD$demand/BOD$time
 
 ```
 

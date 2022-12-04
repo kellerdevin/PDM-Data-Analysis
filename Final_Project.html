@@ -1669,7 +1669,7 @@ sessionInfo()
 ## [17] yaml_2.3.5      fastmap_1.1.0   compiler_4.2.1  htmltools_0.5.3
 ## [21] sass_0.4.2
 getwd()
-## [1] &quot;/Users/apple/Desktop/Business Analytics/MGSC_Final&quot;</code></pre>
+## [1] &quot;/Users/apple/Desktop/Business Analytics/MGSC_Final/PDM-Data-Analysis&quot;</code></pre>
 <!-- ### start answering your problem set here -->
 <!-- You may export your homework in either html or pdf, with the former usually being easier. 
      To export or compile your Rmd file: click above on 'Knit' then 'Knit to HTML' -->
@@ -1714,8 +1714,8 @@ lead_test &lt;- testing(lead_split)
 <p>Shows count and proportions of each class of binary variables in the
 dataset</p>
 <pre class="r"><code>
-for(i in 1:ncol(lead_train)) {       # for-loop over columns
-  table1 &lt;- (table(lead_train[,i]))
+for(i in 1:ncol(lead_df)) {       # for-loop over columns
+  table1 &lt;- (table(lead_df[,i]))
   print(table1)
   
   table2 &lt;-prop.table(table1)
@@ -1723,28 +1723,28 @@ for(i in 1:ncol(lead_train)) {       # for-loop over columns
 }
 ## Non_Work_Email
 ##    0    1 
-## 1567 1099 
+## 2089 1466 
 ## Non_Work_Email
 ##         0         1 
-## 0.5877719 0.4122281 
+## 0.5876231 0.4123769 
 ## Title_Blank
 ##    0    1 
-##  903 1763 
+## 1198 2357 
 ## Title_Blank
 ##         0         1 
-## 0.3387097 0.6612903 
+## 0.3369902 0.6630098 
 ## Website_Blank
 ##    0    1 
-## 1030 1636 
+## 1339 2216 
 ## Website_Blank
 ##         0         1 
-## 0.3863466 0.6136534 
+## 0.3766526 0.6233474 
 ## Converted
 ##    0    1 
-## 2189  477 
+## 2951  604 
 ## Converted
 ##         0         1 
-## 0.8210803 0.1789197</code></pre>
+## 0.8300985 0.1699015</code></pre>
 <div id="can-we-predict-which-leads-are-spam-for-lead-scoring" class="section level2">
 <h2>Can we predict which leads are SPAM for lead scoring?</h2>
 <p>#Decision Tree</p>
@@ -1992,12 +1992,6 @@ ClosedWonData %&gt;%
 {"columns":[{"label":["Close_Date_max"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Lead_Source_Category_max"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Monthly_Gross_Profit_max"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Age_max"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Total_Value_max"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Industry_Category_max"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Estimated_Annual_Revenue_max"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Type_of_Contract_max"],"name":[8],"type":["chr"],"align":["left"]},{"label":["Contract_Length_Months_max"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["Close_Date_min"],"name":[10],"type":["chr"],"align":["left"]},{"label":["Lead_Source_Category_min"],"name":[11],"type":["chr"],"align":["left"]},{"label":["Monthly_Gross_Profit_min"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["Age_min"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["Total_Value_min"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["Industry_Category_min"],"name":[15],"type":["chr"],"align":["left"]},{"label":["Estimated_Annual_Revenue_min"],"name":[16],"type":["dbl"],"align":["right"]},{"label":["Type_of_Contract_min"],"name":[17],"type":["chr"],"align":["left"]},{"label":["Contract_Length_Months_min"],"name":[18],"type":["dbl"],"align":["right"]},{"label":["Close_Date_mean"],"name":[19],"type":["dbl"],"align":["right"]},{"label":["Lead_Source_Category_mean"],"name":[20],"type":["dbl"],"align":["right"]},{"label":["Monthly_Gross_Profit_mean"],"name":[21],"type":["dbl"],"align":["right"]},{"label":["Age_mean"],"name":[22],"type":["dbl"],"align":["right"]},{"label":["Total_Value_mean"],"name":[23],"type":["dbl"],"align":["right"]},{"label":["Industry_Category_mean"],"name":[24],"type":["dbl"],"align":["right"]},{"label":["Estimated_Annual_Revenue_mean"],"name":[25],"type":["dbl"],"align":["right"]},{"label":["Type_of_Contract_mean"],"name":[26],"type":["dbl"],"align":["right"]},{"label":["Contract_Length_Months_mean"],"name":[27],"type":["dbl"],"align":["right"]}],"data":[{"1":"9/7/22","2":"Outbound","3":"196000","4":"318","5":"2352000","6":"Specialized Ad Industries","7":"485902000000","8":"Retainer","9":"24","10":"1/10/22","11":"Channel Partner","12":"0","13":"0","14":"0","15":"Apparel","16":"0","17":"Project","18":"1","19":"NA","20":"NA","21":"18845.14","22":"45.4513","23":"126343.7","24":"NA","25":"1766806984","26":"NA","27":"7.334416"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<pre class="r"><code>
-
-data(&quot;BOD&quot;)
-summary(&quot;BOD&quot;)
-##    Length     Class      Mode 
-##         1 character character</code></pre>
 </div>
 
 
