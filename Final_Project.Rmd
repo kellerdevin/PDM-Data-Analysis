@@ -113,7 +113,23 @@ Shows count and proportions of each class of binary variables in the dataset
 
 summary(lead_df)
 
+coeffMag <- data.frame(Variables=c("Non_Work_Email","Title_Blank","Website Blank", "Converted"), 
+                       count=c(2089,1198,1339,2951))
+  
+# Basic vertical barplot
+Barchart <-ggplot(data=coeffMag, aes(x=Variables, y=count, fill=Variables))+
+  geom_bar(stat="identity")
 
+print(Barchart + coord_flip())
+
+coeffMag <- data.frame(Variables=c("Non_Work_Email","Title_Blank","Website Blank", "Converted"), 
+                       ratio=c(1/1466,1/2357,1/2216,1/604))
+  
+# Basic vertical barplot
+Barchart <-ggplot(data=coeffMag, aes(x=Variables, y=ratio, fill=Variables))+
+  geom_bar(stat="identity")
+
+print(Barchart + coord_flip())
 
 ```
 
@@ -146,7 +162,7 @@ logit_fit <-  glm(Converted ~ Non_Work_Email + Title_Blank + Website_Blank,
 
 print(summary(logit_fit))
 
-print(1- exp(logit_fit$coefficients))
+print(exp(logit_fit$coefficients) - 1)
 
 ```
 
@@ -156,7 +172,7 @@ Successfully created logistic regression model and all p values seem appropriate
 ```{r}
 
 coeffMag <- data.frame(Variables=c("Intercept","Non_Work_Email","Title_Blank","Website Blank"), 
-                       coefficients=c(.36,.91,.43,.41))
+                       coefficients=c(-.36,-.91,-.43,-.41))
   
 # Basic vertical barplot
 Barchart <-ggplot(data=coeffMag, aes(x=Variables, y=coefficients, fill=Variables))+
