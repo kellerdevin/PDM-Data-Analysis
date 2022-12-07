@@ -118,7 +118,7 @@ coeffMag <- data.frame(Variables=c("Non_Work_Email","Title_Blank","Website Blank
   
 # Basic vertical barplot
 Barchart <-ggplot(data=coeffMag, aes(x=Variables, y=count, fill=Variables))+
-  geom_bar(stat="identity")
+  geom_bar(stat="identity") + theme(text = element_text(size = 25)) + ggtitle("Count of True Values")
 
 print(Barchart + coord_flip())
 
@@ -127,7 +127,7 @@ coeffMag <- data.frame(Variables=c("Non_Work_Email","Title_Blank","Website Blank
   
 # Basic vertical barplot
 Barchart <-ggplot(data=coeffMag, aes(x=Variables, y=ratio, fill=Variables))+
-  geom_bar(stat="identity")
+  geom_bar(stat="identity") + theme(text = element_text(size = 25)) + ggtitle("Ratio of Trues and Falses")
 
 print(Barchart + coord_flip())
 
