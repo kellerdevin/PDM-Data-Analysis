@@ -1686,6 +1686,7 @@ library(&#39;randomForest&#39;)
 library(&#39;visNetwork&#39;)
 library(&#39;sparkline&#39;)
 library(partykit)
+library(caret)
 library(rpart.plot)  
 library(plotROC)
 library(glmnet)
@@ -1748,6 +1749,10 @@ plot(lead_tree2)</code></pre>
 ## 
 ## Number of inner nodes:    4
 ## Number of terminal nodes: 5</code></pre>
+<pre class="r"><code>predictions &lt;- predict(lead_tree2, lead_test, type = &quot;response&quot;)
+accuracy &lt;- mean(predictions == lead_test$Converted)
+print(accuracy)
+## [1] 0.8571429</code></pre>
 <p>#Logistic Regression</p>
 <pre class="r"><code>
 logit_fit &lt;-  glm(Converted ~ Non_Work_Email + Title_Blank + Website_Blank,
