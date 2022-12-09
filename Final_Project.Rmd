@@ -69,6 +69,7 @@ library('randomForest')
 library('visNetwork')
 library('sparkline')
 library(partykit)
+library(caret)
 library(rpart.plot)  
 library(plotROC)
 library(glmnet)
@@ -151,6 +152,11 @@ print(lead_tree2)
 
 ```
 
+```{r}
+predictions <- predict(lead_tree2, lead_test, type = "response")
+accuracy <- mean(predictions == lead_test$Converted)
+print(accuracy)
+```
 
 ## Logistic Regression
 
