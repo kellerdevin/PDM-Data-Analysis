@@ -82,7 +82,7 @@ library(ROCR)
 
 
 
-#DATA CLEANING
+# DATA CLEANING
 
 Converts all variables into factors and splots the dataset into train and test sets
 
@@ -104,7 +104,7 @@ lead_test <- testing(lead_split)
 ```
 
 
-#Summary Statistics
+# Summary Statistics
 
 Shows count and proportions of each class of binary variables in the dataset
 
@@ -118,7 +118,7 @@ coeffMag <- data.frame(Variables=c("Non_Work_Email","Title_Blank","Website Blank
   
 # Basic vertical barplot
 Barchart <-ggplot(data=coeffMag, aes(x=Variables, y=count, fill=Variables))+
-  geom_bar(stat="identity") + theme(text = element_text(size = 25)) + ggtitle("Count of True Values")
+  geom_bar(stat="identity") + ggtitle("Count of True Values")
 
 print(Barchart + coord_flip())
 
@@ -127,16 +127,16 @@ coeffMag <- data.frame(Variables=c("Non_Work_Email","Title_Blank","Website Blank
   
 # Basic vertical barplot
 Barchart <-ggplot(data=coeffMag, aes(x=Variables, y=ratio, fill=Variables))+
-  geom_bar(stat="identity") + theme(text = element_text(size = 25)) + ggtitle("Ratio of Trues and Falses")
+  geom_bar(stat="identity") + ggtitle("Ratio of Trues and Falses")
 
 print(Barchart + coord_flip())
 
 ```
 
 
-## Can we predict which leads are SPAM for lead scoring?
+# Can we predict which leads are SPAM for lead scoring?
 
-#Decision Tree
+## Decision Tree
 
 ```{r}
 
@@ -152,7 +152,7 @@ print(lead_tree2)
 ```
 
 
-#Logistic Regression
+## Logistic Regression
 
 ```{r}
 
@@ -200,6 +200,8 @@ pred = prediction(pred, lead_test$Converted)
 roc = performance(pred,"tpr","fpr")
 print(plot(roc, colorize = T, lwd = 2))
 
+
+
 ```
 
 This AUC plot shows that the model performed pretty well and that a suitable probability cutoff would be 0.35 in order to maximize True postive rates and minimize false positive rates, best indicating which leads are convertable.
@@ -209,64 +211,19 @@ This AUC plot shows that the model performed pretty well and that a suitable pro
 auc = performance(pred, measure = "auc")
 print(auc@y.values)
 
-```
+probs = predict(logit_fit, lead_test, type="response")
+preds = rep("0", dim(lead_test)[1])
+preds[probs > .35] = "1"
 
-An AUC score of 0.8 is fantastic and shows that the model is a decently effective one which could definitely add value to the company and help score leads which will maximize profit for the company.
+mean(preds == lead_test$Converted)
 
-
-
-
-
-##Can we use a linear regression model to predict when deals will close?
-
-```{r}
-ClosedWonData <- read_csv("ClosedWonData.csv")
-
-ClosedWonData
-
-ClosedWonData %>%
-  group_by(Industry_Category) %>%
-  summarize(Age = mean(Age)) 
-
-lm_mod1 <- lm(Age ~ Monthly_Gross_Profit + factor(Industry_Category) + Estimated_Annual_Revenue + factor(Lead_Source_Category) + factor(Type_of_Contract) + Total_Value + Contract_Length_Months, data = ClosedWonData)
-summary(lm_mod1)
-
-```
-
-```{r}
-
-#ClosedWonData
-
-#ridge_mod <- cv.glmnet(Age ~ Monthly_Gross_Profit + factor(Industry_Category) + Estimated_Annual_Revenue + factor(Lead_Source_Category) + factor(Type_of_Contract) + Total_Value + Contract_Length_Months, data = ClosedWonData, alpha=0)
-#print(ridge_mod)
-
-
-#lasso_mod <- cv.glmnet(Age ~ Monthly_Gross_Profit + factor(Industry_Category) + Estimated_Annual_Revenue + factor(Lead_Source_Category) + factor(Type_of_Contract) + Total_Value + Contract_Length_Months, data = ClosedWonData, alpha=1)
-#print(lasso_mod)
-#plot(lasso_mod)
-
-#coef(lasso_mod,
- #    s = ridge_mod$lambda.min)
-
-ggplot(ClosedWonData, aes(x = Age, y = Industry_Category)) + geom_density_ridges2()
-
-ggplot(ClosedWonData, aes(x = Age, y = Lead_Source_Category)) + geom_density_ridges2()
-
-ggplot(ClosedWonData, aes(x = Age, y = Type_of_Contract)) + geom_density_ridges2()
-
-ggplot(ClosedWonData, aes(x = Age, y = Monthly_Gross_Profit)) + geom_point() + geom_smooth(method = "lm", color = "red")
 
 
 ```
 
-```{r}
-
-ClosedWonData %>%
-  summarise_all(funs(max, min, mean))
+An AUC score of 0.76 is fantastic and shows that the model is a decently effective one which could definitely add value to the company and help score leads which will maximize profit for the company. The accuracy score of 75.8% with a probability cutoff of 0.35 is a pretty solid accuracy score, indicating that this model would be a potentially good choice to implement for the company.
 
 
-```
+## Which model should be implemented?
 
-
-
-
+Decision tree has a higher accuracy score meaning that is the model that should be implemented for the companies lead scoring system.
